@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "396867608722",
+    "project_id": "madic-834c8",
+    "storage_bucket": "madic-834c8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396867608722:android:de6a4e820b31e20c7b064b",
+        "android_client_info": {
+          "package_name": "com.example.madic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "396867608722-tcr4hp62oqj15b98a2oug7qstp1sjkip.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPPr7vQBEL-G_NAaGbdG8L9hmWafqOpOU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "396867608722-tcr4hp62oqj15b98a2oug7qstp1sjkip.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
