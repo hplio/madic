@@ -14,11 +14,13 @@ class NotificationController extends GetxController {
 
   RxString notificationTitle = "No New Notification".obs;
   RxString notificationBody = "".obs;
+  final isPermissionGranted = false.obs;
 
   @override
-  void onInit() async{
+  void onInit() async {
     super.onInit();
-   await initializeNotifications();
+    await initializeNotifications();
+    isPermissionGranted.value = await checkNotificationPermission();
   }
 
   Future<void> initializeNotifications() async {
@@ -53,8 +55,10 @@ class NotificationController extends GetxController {
       if (kDebugMode) {
         print("Foreground Message: ${message.notification?.title}");
       }
-      notificationTitle.value = message.notification?.title ?? "New Notification";
-      notificationBody.value = message.notification?.body ?? "You have a new update";
+      notificationTitle.value =
+          message.notification?.title ?? "New Notification";
+      notificationBody.value =
+          message.notification?.body ?? "You have a new update";
       _showLocalNotification(message);
     });
 
@@ -67,16 +71,45 @@ class NotificationController extends GetxController {
   }
 
   // Background message handler
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  static Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
     if (kDebugMode) {
       print("Handling background message: ${message.messageId}");
     }
   }
 
+  Future<bool> checkNotificationPermission() async {
+    final bool? granted = await _flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.areNotificationsEnabled();
+
+    if (granted == true) {
+      if (kDebugMode) {
+        print("✅ Notifications are enabled!");
+      }
+    } else {
+      if (kDebugMode) {
+        print("❌ Notifications are NOT enabled!");
+      }
+    }
+    return granted ?? false;
+  }
+
+  Future<void> requestNotificationPermission() async {
+    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+        _flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    await androidImplementation?.requestNotificationsPermission();
+  }
+
   // Show a local notification
   Future<void> _showLocalNotification(RemoteMessage message) async {
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'channel_id',
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      '456',
+      // 'channel_id',
       'Notifications',
       importance: Importance.max,
       priority: Priority.high,
@@ -92,28 +125,33 @@ class NotificationController extends GetxController {
     );
   }
 
-Future<void> scheduleNotification(DateTime scheduledTime) async {
-  final tz.TZDateTime tzScheduledTime = tz.TZDateTime.from(scheduledTime, tz.local); // ✅ Convert to TZDateTime
+  Future<void> scheduleNotification(DateTime scheduledTime) async {
+    if (!isPermissionGranted.value) {
+      await requestNotificationPermission();
+    }
+    final tz.TZDateTime tzScheduledTime =
+        tz.TZDateTime.from(scheduledTime, tz.local);
 
-  const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-    'medication_channel',
-    'Medicine Reminders',
-    importance: Importance.max,
-    priority: Priority.high,
-  );
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      'medication_channel',
+      'Medicine Reminders',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
 
-  const NotificationDetails notificationDetails =
-      NotificationDetails(android: androidDetails);
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidDetails);
 
-  await _flutterLocalNotificationsPlugin.zonedSchedule(
-    0, // Notification ID
-    'Medicine Reminder',
-    'Time to take your medicine!',
-    tzScheduledTime, 
-    notificationDetails,
-    androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-  );
-}
-
+    await _flutterLocalNotificationsPlugin.zonedSchedule(
+      0, // Notification ID
+      'Medicine Reminder',
+      'Time to take your medicine!',
+      tzScheduledTime,
+      notificationDetails,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  }
 }

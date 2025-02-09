@@ -10,20 +10,25 @@ plugins {
 
 android {
     namespace = "com.example.madic"
-    compileSdk = flutter.compileSdkVersion
+    // compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        // sourceCompatibility = JavaVersion.VERSION_17
+        // targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
         coreLibraryDesugaringEnabled true
+        
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 
     defaultConfig {
+        
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.madic"
         ndkVersion = "25.1.8937393"
@@ -49,5 +54,6 @@ flutter {
 }
 dependencies {
     // Add the core library desugaring dependency
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3' // Use the latest version
+    // coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3' // Use the latest version
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
 }
