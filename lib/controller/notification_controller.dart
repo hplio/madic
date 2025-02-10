@@ -15,6 +15,7 @@ class NotificationController extends GetxController {
   RxString notificationTitle = "No New Notification".obs;
   RxString notificationBody = "".obs;
   final isPermissionGranted = false.obs;
+  final isIntialize = false.obs;
 
   @override
   void onInit() async {
@@ -62,12 +63,21 @@ class NotificationController extends GetxController {
       _showLocalNotification(message);
     });
 
+    if (isIntialize.value) {
+      return;
+    }
+
+    // final curruntTimeZone = await FlutterTimezone.getLocalTimezone();
+    // tz.setLocalLocation(tz.getLocation(curruntTimeZone));
+
     // Initialize local notifications
     const AndroidInitializationSettings androidInitSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings initSettings =
         InitializationSettings(android: androidInitSettings);
     await _flutterLocalNotificationsPlugin.initialize(initSettings);
+
+    isIntialize.value = true;
   }
 
   // Background message handler
@@ -149,7 +159,7 @@ class NotificationController extends GetxController {
       'Time to take your medicine!',
       tzScheduledTime,
       notificationDetails,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );

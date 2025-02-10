@@ -5,14 +5,16 @@ import 'package:madic/firebase_options.dart';
 import 'package:madic/screen/login_screen.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'bindings/network_binding.dart';
-// import 'controller/notification_controller.dart';
+import 'controller/notification_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   tz.initializeTimeZones();
+  Get.put(NotificationController());
 
   runApp(const MyApp());
 }

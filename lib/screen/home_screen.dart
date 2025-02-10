@@ -8,7 +8,6 @@ import '../auth/user/madical_data.dart';
 import '../auth/user/user_repo.dart';
 import '../common/date_builder_widget.dart';
 import '../controller/calender_controller.dart';
-import '../controller/notification_controller.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,7 +16,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final userController = Get.put(FirestoreService());
     final controller = Get.put(CalendarController());
-    Get.put(NotificationController());
+    
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(100),
